@@ -1,5 +1,7 @@
 Converts a number to English and vice versa.
 
+Tested with SWI-Prolog (SWI-Prolog version 5.10.4 for amd64).
+
 = TODO
 * Extend to numbers above 999.
 * Make the conversion back and forth more elegant (meta-interpreter?)
