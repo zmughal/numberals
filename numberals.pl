@@ -1,5 +1,7 @@
 % Numberals
 
+isdigit(X) :- member(X, [0,1,2,3,4,5,6,7,8,9]).
+
 % number <-> name table {{{
 number_to_name_t([0], zero).
 number_to_name_t([1], one).
@@ -52,11 +54,28 @@ power_name(48, quindecillion).
 
 number_to_name(Num, Name) :- number_to_name_t(Num, Name).
 
+% negative {{{
+number_to_name([-|Positive], Name) :-
+	ground(Positive),
+	Positive \= [-|_],
+	number_to_name(Positive, Positive_Name),
+	string_concat('negative ', Positive_Name, Name_Str),
+	string_to_atom(Name_Str, Name).
+number_to_name(Number, Name) :-
+	ground(Name),
+	string_concat('negative ', Positive_Name_Str, Name),
+	string_to_atom(Positive_Name_Str, Positive_Name),
+	number_to_name(Positive, Positive_Name),
+	Positive \= [-|_],
+	Number = [-|Positive].
+
+% }}}
 % tens {{{
 % Num >= 21, Num =< 99,
 % number -> name
 number_to_name([Tens, Ones], Name) :-
 	ground([Tens, Ones]),
+	isdigit(Tens), isdigit(Ones),
 	number_to_name_t([Tens, 0], Tens_Name),
 	number_to_name_t([ Ones ], Ones_Name),
 	Tens \= 1, Ones \= 0,
@@ -94,7 +113,9 @@ number_to_name([Hundreds, Tens, Ones ], Name) :-
 	number_to_name_t( [Hundreds], Hundreds_Name),
 	Hundreds > 0,
 	hundred_build([Tens, Ones], Rest_Name).
+% }}}
 
+% hundred helpers {{{
 number_to_name_prefix([0, Tens, Ones], Name) :- number_to_name( [Tens, Ones], Name).
 number_to_name_prefix([Hundreds, Tens, Ones], Name) :- number_to_name( [Hundreds, Tens, Ones], Name).
 number_to_name_prefix([0, Ones], Name) :- number_to_name( [Ones], Name).
@@ -118,23 +139,37 @@ hundred_build( [0, 0], '').
 
 % }}}
 
-
 test :-
 	test_both_ways([0], 'zero'),
+	test_both_ways(['-',0], 'negative zero'), % signed zero
 	test_both_ways([1,0], 'ten'),
+	test_both_ways([-,1,0], 'negative ten'),
 	test_both_ways([1,4], 'fourteen'),
+	test_both_ways([-,1,4], 'negative fourteen'),
 	test_both_ways([2,0], 'twenty'),
+	test_both_ways([-,2,0], 'negative twenty'),
 	test_both_ways([2,1], 'twenty-one'),
+	test_both_ways([-,2,1], 'negative twenty-one'),
 	test_both_ways([3,2], 'thirty-two'),
+	test_both_ways([-,3,2], 'negative thirty-two'),
 	test_both_ways([3,5], 'thirty-five'),
+	test_both_ways([-,3,5], 'negative thirty-five'),
 	test_both_ways([1, 3,5], 'one hundred and thirty-five'),
+	test_both_ways([-,1, 3,5], 'negative one hundred and thirty-five'),
 	test_both_ways([1,0,0], 'one hundred'),
+	test_both_ways([-,1,0,0], 'negative one hundred'),
 	test_both_ways([2,0,0], 'two hundred'),
+	test_both_ways([-,2,0,0], 'negative two hundred'),
 	test_both_ways([2,0,1], 'two hundred and one'),
+	test_both_ways([-,2,0,1], 'negative two hundred and one'),
 	test_both_ways([2,2,0], 'two hundred and twenty'),
+	test_both_ways([-,2,2,0], 'negative two hundred and twenty'),
 	test_both_ways([2,2,5], 'two hundred and twenty-five'),
+	test_both_ways([-,2,2,5], 'negative two hundred and twenty-five'),
 	test_both_ways([3,1,0], 'three hundred and ten'),
-	test_both_ways([9,9,9], 'nine hundred and ninety-nine').
+	test_both_ways([-,3,1,0], 'negative three hundred and ten'),
+	test_both_ways([9,9,9], 'nine hundred and ninety-nine'),
+	test_both_ways([-,9,9,9], 'negative nine hundred and ninety-nine').
 
 test_both_ways(Num, Name) :-
 	writef( '%q -> %q : ', [Num,  Name] ), number_to_name(Num, Test_Name), writef( 'Got %q', [Test_Name]), nl, Name = Test_Name,
