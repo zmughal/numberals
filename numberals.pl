@@ -169,11 +169,26 @@ test :-
 	test_both_ways([3,1,0], 'three hundred and ten'),
 	test_both_ways([-,3,1,0], 'negative three hundred and ten'),
 	test_both_ways([9,9,9], 'nine hundred and ninety-nine'),
-	test_both_ways([-,9,9,9], 'negative nine hundred and ninety-nine').
+	test_both_ways([-,9,9,9], 'negative nine hundred and ninety-nine'),
+	test_num_fail('zero hundred'),
+	test_name_fail([1,-,0]),
+	test_name_fail([-,-,0]),
+	test_name_fail([-,-,-]),
+	test_name_fail([0,0,0]).
 
 test_both_ways(Num, Name) :-
+	ground([Num, Name]),
 	writef( '%q -> %q : ', [Num,  Name] ), number_to_name(Num, Test_Name), writef( 'Got %q', [Test_Name]), nl, Name = Test_Name,
 	writef( '%q -> %q : ', [Name,  Num] ), number_to_name(Test_Num, Name), writef( 'Got %q', [Test_Num ]), nl, nl, Num  = Test_Num.
+
+test_num_fail(Name) :-
+	writef( 'Testing name %q : ', [Name]),
+	(\+ number_to_name(_, Name), writef('not found - ok'), nl;
+		writef('found - fail'), nl), nl.
+test_name_fail(Num) :-
+	writef( 'Testing number %q : ', [Num]),
+	(\+ number_to_name(Num, _), writef('not found - ok'), nl;
+		writef('found - fail'), nl), nl.
 
 % --> 
 
