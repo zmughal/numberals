@@ -1,5 +1,13 @@
 % Numberals
 
+%:- use_module(library(chr)).
+%:- chr_type digit ---> 0; 1; 2; 3; 4; 5; 6; 7; 8; 9.
+%:- chr_type positional_system ---> [digit]; [digit|list(digit)]; ['-', digit|list(digit)].
+%:- chr_type list(T) ---> []; [T|list(T)].
+%:- chr_constraint chr_number_to_name(?positional_system, ?list(int)).
+%chr_number_to_name([0], "zero") ==> true.
+
+
 isdigit(X) :- member(X, [0,1,2,3,4,5,6,7,8,9]).
 
 % number <-> name table {{{
@@ -34,6 +42,7 @@ number_to_name_t([8,0], "eighty").
 number_to_name_t([9,0], "ninety").
 % }}}
 % powers table {{{
+power_name(0, "").
 power_name(3, "thousand").
 power_name(6, "million").
 power_name(9, "billion").
@@ -60,13 +69,11 @@ number_to_name([-|Positive], Name) :-
 	Positive \= [-|_],
 	number_to_name(Positive, Positive_Name),
 	append(["negative ", Positive_Name], Name).
-number_to_name(Number, Name) :-
+number_to_name([-|Positive], Name) :-
 	ground(Name),
 	append(["negative ", Positive_Name], Name),
 	number_to_name(Positive, Positive_Name),
-	Positive \= [-|_],
-	Number = [-|Positive].
-
+	Positive \= [-|_].
 % }}}
 % tens {{{
 % Num >= 21, Num =< 99,
@@ -82,7 +89,9 @@ number_to_name([Tens, Ones], Name) :-
 number_to_name([Tens, Ones], Name) :-
 	ground(Name),
 	append([Tens_Name, "-", Ones_Name], Name),
+	isdigit(Tens),
 	number_to_name_t([Tens, 0], Tens_Name),
+	isdigit(Ones),
 	number_to_name_t([ Ones ], Ones_Name).
 % }}}
 % hundreds {{{
@@ -100,16 +109,37 @@ number_to_name([Hundreds, Tens, Ones ], Name) :-
 	ground(Name),
 	append([Hundreds_Name, " hundred", Rest_Name], Name),
 	number_to_name_t( [Hundreds], Hundreds_Name),
-	Hundreds > 0,
+	isdigit(Hundreds), Hundreds > 0,
+	isdigit(Tens), isdigit(Ones),
 	hundred_build([Tens, Ones], Rest_Name).
 % }}}
-
+% group {{{
+number_to_name(Num, Name) :-
+	ground(Num), length(Num, NumL), NumL > 3,
+	append(First, NumNext, Num),
+	length(First, First_l), First_l < 4,
+	length(NumNext, NumNext_l), NumNext_l mod 3 =:= 0,
+	number_to_name_add_prefix(First, FirstPrefix),
+	FirstPrefix \= [0, 0, 0],
+	append(FirstPrefix, NumNext, PrefixNum),
+	number_to_name_group(PrefixNum, Name, NumNext_l).
+number_to_name_group([H,T,O|NumNext], Name, Group) :-
+	Group >= 0,
+	( [H, T, O] = [0, 0, 0] -> Group_Name = ""; power_name(Group, Group_Name) ),
+	(Group_Name \= "" -> Space = " "; Space = ""),
+	number_to_name_prefix([H,T,O], Group_Prefix),
+	GroupNext is Group - 3,
+	number_to_name_group(NumNext, NameNext, GroupNext),
+	append([Group_Prefix, Space, Group_Name, NameNext], Name).
+number_to_name_group([], "", _).
+% }}}
 % hundred helpers {{{
 number_to_name_prefix([       0,    0,    0], "").
-number_to_name_prefix([       0, Tens, Ones], Name) :- number_to_name( [Tens, Ones], Name).
-number_to_name_prefix([Hundreds, Tens, Ones], Name) :- number_to_name( [Hundreds, Tens, Ones], Name).
+number_to_name_prefix([       0,    0, Ones], Name) :- Ones \= 0, number_to_name( [Ones], Name).
+number_to_name_prefix([       0, Tens, Ones], Name) :- Tens \= 0, number_to_name( [Tens, Ones], Name).
+number_to_name_prefix([Hundreds, Tens, Ones], Name) :- [Hundreds, Tens] \= [0, 0], number_to_name( [Hundreds, Tens, Ones], Name).
 number_to_name_prefix([   0, Ones], Name) :- number_to_name( [Ones], Name).
-number_to_name_prefix([Tens, Ones], Name) :- number_to_name( [Tens, Ones], Name).
+number_to_name_prefix([Tens, Ones], Name) :- Tens \= 0, number_to_name( [Tens, Ones], Name).
 number_to_name_prefix([One], Name) :- number_to_name([One], Name).
 
 hundred_build( [Tens, Ones], Rest_Name) :-
@@ -120,13 +150,16 @@ hundred_build( [Tens, Ones], Rest_Name) :-
 hundred_build( [Tens, Ones], Rest_Name) :-
 	ground(Rest_Name),
 	append([" and ", Rest_Name_Part], Rest_Name),
+	isdigit(Tens), isdigit(Ones),
 	number_to_name_prefix([Tens, Ones], Rest_Name_Part),
 	[Tens, Ones] \= [ 0, 0].
 hundred_build( [0, 0], "").
 % }}}
 
-% }}}
 
-% --> 
+number_to_name_add_prefix([H,T,O], [H,T,O]).
+number_to_name_add_prefix([  T,O], [0,T,O]).
+number_to_name_add_prefix([    O], [0,0,O]).
+
 
 % vim:ft=prolog:fdm=marker
