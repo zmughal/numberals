@@ -1,3 +1,0 @@
-['numberals.pl']. test.
-number_to_name(X, 'zero hundred').
-number_to_name(1000, X).
