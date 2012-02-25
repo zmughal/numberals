@@ -1,2 +1,2 @@
 #!/bin/sh
-swipl -s numberals.plt -g 'run_tests, halt; halt'
+swipl -s numberals.plt -t 'halt' -g 'run_tests, halt; halt'
