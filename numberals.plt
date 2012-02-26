@@ -56,21 +56,28 @@ test_both_ways_test([9,9,9], "nine hundred and ninety-nine").
 test_both_ways_test([-,9,9,9], "negative nine hundred and ninety-nine").
 
 test_both_ways_test([1,0,0,0], "one thousand").
+test_both_ways_test([-,1,0,0,0], "negative one thousand").
 test_both_ways_test([1,0,0,2], "one thousand two").
+test_both_ways_test([-,1,0,0,2], "negative one thousand two").
 test_both_ways_test([1,0,2,2], "one thousand twenty-two").
+test_both_ways_test([-,1,0,2,2], "negative one thousand twenty-two").
 test_both_ways_test([1,9,9,9], "one thousand nine hundred and ninety-nine").
+test_both_ways_test([-,1,9,9,9], "negative one thousand nine hundred and ninety-nine").
 test_both_ways_test([1,0,9,9,9], "ten thousand nine hundred and ninety-nine").
 test_both_ways_test([-,1,0,9,9,9], "negative ten thousand nine hundred and ninety-nine").
 test_both_ways_test([1,0,0,0,0,0,0], "one million").
+test_both_ways_test([-,1,0,0,0,0,0,0], "negative one million").
 test_both_ways_test([2,0,0,0,0,0,0], "two million").
+test_both_ways_test([-,2,0,0,0,0,0,0], "negative two million").
 test_both_ways_test_f([2,0,0,0,9,0,0], "two million nine hundred").%_
 %%%---------------------|-----|-----]
 test_both_ways_test_f([2,0,0,0,0,9,0], "two million ninety").%_
 %%%---------------------|-----|-----]
 test_both_ways_test_f([2,0,0,0,0,0,9], "two million nine").%_
 %%%---------------------|-----|-----]
-test_both_ways_test([1,0,2,0,0,0,0,0,0], "one hundred and two million").%_
-test_both_ways_test([-,1,0,2,0,0,0,0,0,0], "negative one hundred and two million").%_
+test_both_ways_test([1,0,2,0,0,0,0,0,0], "one hundred and two million").
+test_both_ways_test([-,1,0,2,0,0,0,0,0,0], "negative one hundred and two million").
+test_both_ways_test_f([1,0,2,0,0,0,0,0,9], "one hundred and two million nine").
 test_both_ways_test_f([2,0,0,1,0,0,0,1,0,9], "two billion one million one hundred and nine").%_
 %%%---------------------|-----|-----|-----]
 test_both_ways_test([2,0,0,1,1,0,0,1,0,9], "two billion one million one hundred thousand one hundred and nine").
