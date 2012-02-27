@@ -69,28 +69,23 @@ test_both_ways_test([1,0,0,0,0,0,0], "one million").
 test_both_ways_test([-,1,0,0,0,0,0,0], "negative one million").
 test_both_ways_test([2,0,0,0,0,0,0], "two million").
 test_both_ways_test([-,2,0,0,0,0,0,0], "negative two million").
-test_both_ways_test_f([2,0,0,0,9,0,0], "two million nine hundred").%_
-%%%---------------------|-----|-----]
-test_both_ways_test_f([2,0,0,0,0,9,0], "two million ninety").%_
-%%%---------------------|-----|-----]
-test_both_ways_test_f([2,0,0,0,0,0,9], "two million nine").%_
-%%%---------------------|-----|-----]
+test_both_ways_test([2,0,0,0,9,0,0], "two million nine hundred").
+test_both_ways_test([2,0,0,0,0,9,0], "two million ninety").
+test_both_ways_test([2,0,0,0,0,0,9], "two million nine").
 test_both_ways_test([1,0,2,0,0,0,0,0,0], "one hundred and two million").
 test_both_ways_test([-,1,0,2,0,0,0,0,0,0], "negative one hundred and two million").
-test_both_ways_test_f([1,0,2,0,0,0,0,0,9], "one hundred and two million nine").
-test_both_ways_test_f([2,0,0,1,0,0,0,1,0,9], "two billion one million one hundred and nine").%_
-%%%---------------------|-----|-----|-----]
+test_both_ways_test([1,0,2,0,0,0,0,0,9], "one hundred and two million nine").
+test_both_ways_test([2,0,0,1,0,0,0,1,0,9], "two billion one million one hundred and nine").
 test_both_ways_test([2,0,0,1,1,0,0,1,0,9], "two billion one million one hundred thousand one hundred and nine").
 test_both_ways_test([2,0,0,1,1,2,0,1,0,9], "two billion one million one hundred and twenty thousand one hundred and nine").
 test_both_ways_test([2,0,0,1,1,2,3,1,0,9], "two billion one million one hundred and twenty-three thousand one hundred and nine").
-test_both_ways_test_f([2,0,0,0,0,0,1,0,0,0,1,0,9], "two trillion one million one hundred and nine").%_
-%%%---------------------|-----|-----|-----|-----]
+test_both_ways_test([2,0,0,0,0,0,1,0,0,0,1,0,9], "two trillion one million one hundred and nine").
 
 test(test_both_ways, [nondet, forall( test_both_ways_test(Num, Name))]) :-
 	test_both_ways(Num, Name).
 
-test(test_both_ways, [nondet, forall( test_both_ways_test_f(Num, Name))]) :-
-	\+ test_both_ways(Num, Name).
+%test(test_both_ways, [nondet, forall( test_both_ways_test_f(Num, Name))]) :-
+	%\+ test_both_ways(Num, Name).
 
 %test(test_to_name, [nondet, forall( test_to_name_test(Num, Name) )]) :-
 	%%number_to_name(Num, Test_Name), Test_Name = Name.

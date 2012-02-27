@@ -126,7 +126,7 @@ number_to_name(Num, Name) :-
 number_to_name(Num, Name) :-
 	ground(Name),
 	% a non-empty group name must be in Name
-	append([PrefixName," ", Group_Name, _], Name), power_name(Group, Group_Name), Group_Name \= "",
+	append([PrefixName," ", Group_Name, _], Name), power_name(Group, Group_Name), Group > 0,
 	number_to_name_prefix(FirstPrefix, PrefixName),
 	FirstPrefix \= [0, 0, 0],
 	PrefixNumL is Group + 3, length(PrefixNum, PrefixNumL),
@@ -145,8 +145,7 @@ number_to_name_group([H,T,O|NumNext], Name, Group) :-
 	add_space_nextname(NameNext, NameNextS),
 	append([Group_Prefix, Space, Group_Name, NameNextS], Name).
 number_to_name_group([H,T,O|NumNext], Name, Group) :-
-	ground(Name), Group >= 0, GroupNext is Group - 3,
-	%write(Group),nl,
+	ground(Name), Group > 0, GroupNext is Group - 3,
 	(
 		(power_name(Group, Group_Name), (Group_Name == "" -> Space = ""; Space = " "),
 			append([Group_Prefix, Space, Group_Name, NameNextS], Name),
@@ -155,24 +154,31 @@ number_to_name_group([H,T,O|NumNext], Name, Group) :-
 			append([Group_Prefix, Group_Name, NameNextS], Name),
 			number_to_name_prefix([H,T,O], Group_Prefix))
 	),
-	%writef('%s:%s:%s:%w\n', [Group_Prefix, Group_Name, NameNextS, [[H,T,O]]]),
-	add_space_nextname(NameNext, NameNextS), NameNext \= [32|_],
+	remove_space(NameNextS, NameNext),
 	number_to_name_group(NumNext, NameNext, GroupNext).
+number_to_name_group([H,T,O], Name, 0) :- number_to_name_prefix([H,T,O], Name).
 number_to_name_group([], "", _).
-add_space_nextname("", "").
-add_space_nextname([32|NextName], [32|NextName]).
-add_space_nextname([First|NextName], [32,First|NextName]) :- First \= 32.
+
+add_space_nextname("", ""). % empty string
+add_space_nextname([32|NextName], [32|NextName]). % already has a space
+add_space_nextname([First|NextName], [32,First|NextName]) :- First \= 32. % add space
+
+remove_space("", "").
+remove_space([32,First|NextName], [First|NextName]) :- First \= 32.
+remove_space([First|NextName], [First|NextName]) :- [First|NextName] \= "", First \= 32.
 % }}}
 % hundred helpers {{{
 number_to_name_prefix([       0,    0,    0], "") :- !.	% cut to prevent other unifications below
 number_to_name_prefix([       0,    0, Ones], Name) :- ground(Ones), Ones \= 0, number_to_name( [Ones], Name).
 number_to_name_prefix([       0, Tens, Ones], Name) :- ground(Tens), Tens \= 0, number_to_name( [Tens, Ones], Name).
-number_to_name_prefix([Hundreds, Tens, Ones], Name) :- ground([Hundreds, Tens]), [Hundreds, Tens] \= [0, 0], number_to_name( [Hundreds, Tens, Ones], Name).
-number_to_name_prefix([   0, Ones], Name) :- number_to_name( [Ones], Name).
-number_to_name_prefix([Tens, Ones], Name) :- Tens \= 0, number_to_name( [Tens, Ones], Name).
-number_to_name_prefix([One], Name) :- number_to_name([One], Name).
+number_to_name_prefix([Hundreds, Tens, Ones], Name) :- ground([Hundreds, Tens, Ones]), [Hundreds, Tens, Ones] \= [0, 0, 0], number_to_name( [Hundreds, Tens, Ones], Name).
+number_to_name_prefix([   0, Ones], Name) :- ground(Ones), number_to_name( [Ones], Name).
+number_to_name_prefix([Tens, Ones], Name) :- ground([Tens, Ones]), Tens \= 0, number_to_name( [Tens, Ones], Name).
+number_to_name_prefix([One], Name) :- ground([One]), number_to_name([One], Name).
 
-number_to_name_prefix([Hundreds, Tens, Ones], Name) :- ground(Name), member(NumLen, [1,2,3]), length(Num, NumLen), number_to_name( Num, Name),
+number_to_name_prefix([Hundreds, Tens, Ones], Name) :- ground(Name),
+	\+ (append([_, GroupName, _],Name), GroupName \= "", power_name(_, GroupName)),
+	member(NumLen, [1,2,3]), length(Num, NumLen), number_to_name( Num, Name),
 	number_to_name_add_prefix(Num, [Hundreds, Tens, Ones]).
 
 hundred_build( [Tens, Ones], Rest_Name) :-
