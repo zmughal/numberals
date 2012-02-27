@@ -92,6 +92,14 @@ test(test_both_ways, [nondet, forall( test_both_ways_test(Num, Name))]) :-
 	%number_to_name(Num, Test_Name), ( Test_Name = Name -> true; write(Test_Name), nl, writef('%s', [Test_Name]), nl, fail).
 
 test_name_fail_test("zero hundred").
+test_name_fail_test("zero thousand").
+test_name_fail_test("zero million").
+test_name_fail_test("one million "). % extra space
+test_name_fail_test("zero million zero thousand").
+test_name_fail_test("zero million zero thousand zero").
+test_name_fail_test("zero million one thousand").
+test_name_fail_test("one million zero thousand zero").
+test_name_fail_test("one million zero thousand one").
 test(test_name_fail, [nondet, forall( test_name_fail_test(Name) )]) :-
 	test_name_fail(Name).
 
