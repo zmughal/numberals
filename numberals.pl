@@ -149,6 +149,7 @@ number_to_name_group([H,T,O|NumNext], Name, Group) :-
 	(
 		(power_name(Group, Group_Name), (Group_Name == "" -> Space = ""; Space = " "),
 			append([Group_Prefix, Space, Group_Name, NameNextS], Name),
+			Group_Prefix \= "zero",
 			number_to_name_prefix([H,T,O], Group_Prefix));
 		(Group_Prefix = "", Group_Name = "",
 			append([Group_Prefix, Group_Name, NameNextS], Name),
