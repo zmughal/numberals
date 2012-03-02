@@ -43,6 +43,7 @@ number_to_name_t([9,0], "ninety").
 % }}}
 % powers table {{{
 power_name(0, "").
+% short scale
 power_name(3, "thousand").
 power_name(6, "million").
 power_name(9, "billion").
@@ -59,6 +60,23 @@ power_name(39, "duodecillion").
 power_name(42, "tredecillion").
 power_name(45, "quattuordecillion").
 power_name(48, "quindecillion").
+power_name(51, "sexdecillion").
+power_name(54, "septendecillion").
+power_name(57, "octodecillion").
+power_name(60, "novemdecillion").
+power_name(63, "vigintillion").
+power_name(66, "unvigintillion").
+power_name(69, "duovigintillion").
+power_name(72, "trevigintillion").
+power_name(75, "quattuorvigintillion").
+power_name(78, "quinvigintillion").
+power_name(81, "sexvigintillion").
+power_name(84, "septenvigintillion").
+power_name(87, "octovigintillion").
+power_name(90, "novemvigintillion").
+power_name(93, "trigintillion").
+power_name(96, "untrigintillion").
+power_name(99, "duotrigintillion").
 % }}}
 
 number_to_name(Num, Name) :- number_to_name_t(Num, Name).
