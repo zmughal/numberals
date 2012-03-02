@@ -81,7 +81,6 @@ test_both_ways_test([2,0,0,1,1,2,0,1,0,9], "two billion one million one hundred 
 test_both_ways_test([2,0,0,1,1,2,3,1,0,9], "two billion one million one hundred and twenty-three thousand one hundred and nine").
 test_both_ways_test([2,0,0,0,0,0,1,0,0,0,1,0,9], "two trillion one million one hundred and nine").
 
-test_both_ways_test([2,0,0,0,0,0,1,0,0,0,1,0,9], "two trillion one million one hundred and nine").
 test_both_ways_test([1,0, 0,0,0, 0,0,0, 0,0,0,
 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0,
 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0, 0,0,0,
