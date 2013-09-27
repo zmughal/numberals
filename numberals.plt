@@ -13,12 +13,16 @@ test_both_ways(Num, Name) :-
 
 test_name_fail(Name) :-
 	log_writef( 'Testing name %s : ', [Name]),
-	(\+ number_to_name(_, Name) -> log_writef('not found - ok'), log_writef('\n');
-		log_writef('found - fail'), log_writef('\n'), fail), log_writef('\n').
+	( \+ number_to_name(_, Name)
+	-> log_writef('not found - ok'), log_writef('\n')
+	; log_writef('found - fail'), log_writef('\n'), fail
+	), log_writef('\n').
 test_num_fail(Num) :-
 	log_writef( 'Testing number %q : ', [Num]),
-	(\+ number_to_name(Num, _) -> log_writef('not found - ok'), log_writef('\n');
-		log_writef('found - fail'), log_writef('\n'), fail), log_writef('\n').
+	(\+ number_to_name(Num, _)
+	-> log_writef('not found - ok'), log_writef('\n')
+	; log_writef('found - fail'), log_writef('\n'), fail
+	), log_writef('\n').
 
 test_both_ways_test([0], "zero").
 test_both_ways_test(['-',0], "negative zero"). % signed zero

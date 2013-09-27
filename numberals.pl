@@ -155,23 +155,24 @@ number_to_name(Num, Name) :-
 	append(FirstPrefixNoZero, NumNext, Num).
 number_to_name_group([H,T,O|NumNext], Name, Group) :-
 	ground(Group), Group >= 0, ground([H,T,O|NumNext]),
-	( [H, T, O] = [0, 0, 0] -> Group_Name = ""; power_name(Group, Group_Name) ),
+	( [H, T, O] = [0, 0, 0] -> Group_Name = "" ; power_name(Group, Group_Name) ),
 	number_to_name_prefix([H,T,O], Group_Prefix),
 	GroupNext is Group - 3,
 	number_to_name_group(NumNext, NameNext, GroupNext),
-	(Group_Name == "" -> Space = ""; Space = " "),
+	(Group_Name == "" -> Space = "" ; Space = " "),
 	add_space_nextname(NameNext, NameNextS),
 	append([Group_Prefix, Space, Group_Name, NameNextS], Name).
 number_to_name_group([H,T,O|NumNext], Name, Group) :-
 	ground(Name), Group > 0, GroupNext is Group - 3,
 	(
-		(power_name(Group, Group_Name), (Group_Name == "" -> Space = ""; Space = " "),
+		power_name(Group, Group_Name), (Group_Name == "" -> Space = "" ; Space = " "),
 			append([Group_Prefix, Space, Group_Name, NameNextS], Name),
 			Group_Prefix \= "zero",
-			number_to_name_prefix([H,T,O], Group_Prefix));
-		(Group_Prefix = "", Group_Name = "",
+			number_to_name_prefix([H,T,O], Group_Prefix)
+	;
+		Group_Prefix = "", Group_Name = "",
 			append([Group_Prefix, Group_Name, NameNextS], Name),
-			number_to_name_prefix([H,T,O], Group_Prefix))
+			number_to_name_prefix([H,T,O], Group_Prefix)
 	),
 	remove_space(NameNextS, NameNext),
 	number_to_name_group(NumNext, NameNext, GroupNext).
