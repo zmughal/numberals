@@ -9,3 +9,4 @@ Tested with SWI-Prolog (SWI-Prolog version 5.10.4 for amd64).
 * Test on a corpus.
 * Extend to other variations (e.g. Roman numerals, other
   languages/dialects/usages, fuzzy)
+* Read description of [A005589](https://oeis.org/A005589).
