@@ -1,4 +1,8 @@
-.PHONY: test
+SWIPL := swipl
 
-test:
-	./run_tests
+.PHONY: test test-numberals
+
+test: test-numberals
+
+test-numberals: numberals.plt
+	$(SWIPL) -s $< -t 'halt' -g 'run_tests, halt; halt'
